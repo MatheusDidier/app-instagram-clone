@@ -1,0 +1,40 @@
+<div class="card" style="width: 20rem;" [@cadastro-fail]="estadoCadastro">
+  <div class="card-body">
+    <div class="card-title"></div>
+
+    <form [formGroup]="formularioCadastro" (ngSubmit)="cadastrarUsuario()">
+      <div class="form-group">
+        <input type="email" class="form-control" placeholder="E-mail" formControlName="email">
+      </div>
+      <div class="form-group">
+        <input type="text" class="form-control" placeholder="Nome completo" formControlName="nome">
+      </div>
+      <div class="form-group">
+        <input type="text" class="form-control" placeholder="Nome de usuário" formControlName="usuario">
+      </div>
+      <div class="form-group">
+        <input type="password" class="form-control" placeholder="Senha" formControlName="senha">
+      </div>
+      <button [disabled]="botaoDisabled()" type="submit" class="btn btn-primary btn-sm btn-block">Cadastre-se</button>
+    </form>
+    <div *ngIf="failCadastro">
+      <p class="small text-danger text-center">Usuario para cadastro invalido! Favor cadastrar com dados integros.</p>
+    </div>
+    <hr />
+
+
+    <p class="small text-center">Ao cadastrar-se, você concorda com nossos
+      <b>Termos</b> e
+      <b>Política de Privacidade</b>.</p>
+
+  </div>
+</div>
+<br />
+<div class="card" style="width: 20rem;">
+  <div class="card-body">
+    <p class="card-text">
+      Tem uma conta?
+      <a href="#" class="card-link" (click)="exibirPainelLogin()">Faça login</a>
+    </p>
+  </div>
+</div>
