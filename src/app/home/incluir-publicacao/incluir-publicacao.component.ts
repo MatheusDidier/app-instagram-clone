@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { FormGroup, FormControl } from "@angular/forms";
 import { Bd } from "../../bd.service";
 import * as firebase from "firebase";
-import {Progresso} from "../../progresso.service";
-import {Subject} from "rxjs/Subject";
+import { Progresso } from "../../progresso.service";
+import { Subject } from "rxjs/Subject";
 
-import {Observable} from "rxjs/Observable";
+import { Observable } from "rxjs/Observable";
 import "rxjs/Rx";
 @Component({
   selector: 'app-incluir-publicacao',
@@ -14,10 +14,13 @@ import "rxjs/Rx";
 })
 export class IncluirPublicacaoComponent implements OnInit {
 
-  constructor(private bd: Bd, private progresso:Progresso) { }
+  constructor(private bd: Bd, private progresso: Progresso) { }
 
-  public progressoPublicacao: string ="Pendente";
-  public porcentagemUpload:number = 0;
+
+  public progressoPublicacao: string = "Pendente";
+  public porcentagemUpload: number = 0;
+
+  @Output() public atualizarTimeLine: EventEmitter<any> = new EventEmitter<any>();
 
   public formularioPublicacao: FormGroup = new FormGroup({
     "titulo": new FormControl(null)
@@ -49,13 +52,14 @@ export class IncluirPublicacaoComponent implements OnInit {
     continua.next(true);
     let acompanhamentoUpload = Observable.interval(1500);
     acompanhamentoUpload.
-    takeUntil(continua).subscribe(() => {
-      this.porcentagemUpload = Math.round(this.progresso.porcentagem * 100);
-      if(this.progresso.status == "Concluido" || this.progresso.status == "Erro"){
-        this.progressoPublicacao = "Concluido";
-        continua.next(false);
-      }
-    });
+      takeUntil(continua).subscribe(() => {
+        this.porcentagemUpload = Math.round(this.progresso.porcentagem * 100);
+        if (this.progresso.status == "Concluido" || this.progresso.status == "Erro") {
+          this.progressoPublicacao = "Concluido";
+          this.atualizarTimeLine.emit();
+          continua.next(false);
+        }
+      });
   }
 
   public preparaImagemUpload(event: Event): void {
