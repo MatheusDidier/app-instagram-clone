@@ -16,6 +16,9 @@ export class IncluirPublicacaoComponent implements OnInit {
 
   constructor(private bd: Bd, private progresso:Progresso) { }
 
+  public progressoPublicacao: string ="Pendente";
+  public porcentagemUpload:number = 0;
+
   public formularioPublicacao: FormGroup = new FormGroup({
     "titulo": new FormControl(null)
   })
@@ -40,14 +43,16 @@ export class IncluirPublicacaoComponent implements OnInit {
       imagem: this.imagem[0]
     });
 
+    this.progressoPublicacao = "Andamento";
+
     let continua = new Subject();
     continua.next(true);
     let acompanhamentoUpload = Observable.interval(1500);
     acompanhamentoUpload.
     takeUntil(continua).subscribe(() => {
-      console.log(this.progresso.status);
-      console.log(this.progresso.estado);
+      this.porcentagemUpload = Math.round(this.progresso.porcentagem * 100);
       if(this.progresso.status == "Concluido" || this.progresso.status == "Erro"){
+        this.progressoPublicacao = "Concluido";
         continua.next(false);
       }
     });
